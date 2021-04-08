@@ -8,23 +8,46 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True) 
+    firstName = Column(String(50))
+    lastName = Column(String(50))
+    email = Column(String(100))
+    picture = Column(String(250))
+    user = relationship('Favorite', back_populates="user") # One to Many
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Favorite(Base):  # As every element on the list of favorites
+    __tablename__ = 'favorite'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    date = Column(String(25))
+    user_id = Column(Integer, ForeignKey('user.id')) 
+    character = relationship('Character', back_populates="favorite") # One to Many
+    planet = relationship('Planet', back_populates="favorite") # One to Many
+
+class Character(Base):
+    __tablename__ = 'character'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    age = Column(Integer)
+    birthYear = Column(String(25))
+    gender = Column(String(25))
+    description = Column(String(300))
+    favorite_id = Column(Integer, ForeignKey('favorite.id'))
+
+class Planet(Base):
+    __tablename__ = 'planet'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    population = Column(Integer)
+    terrain = Column(String(25))
+    climate = Column(String(25))
+    description = Column(String(300))
+    favorite_id = Column(Integer, ForeignKey('favorite.id'))
+
+#------------
+#------------
+#------------
 
     def to_dict(self):
         return {}
